@@ -36,6 +36,9 @@ app.get("/api/", function(req, res) {
 
 app.get("/api/:date_string", function (req, res) {
   let dateString = req.params.date_string;
+  if(dateString.match(/\d{5,}/)){
+    dateString = +dateString;
+  }
   let passedValue = new Date(dateString);
   if(passedValue == "Invalid Date") {
     res.json({ "error" : "Invalid Date" })
