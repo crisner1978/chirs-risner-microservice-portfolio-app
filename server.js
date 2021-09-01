@@ -84,8 +84,6 @@ app.get("/api/whoami", function (req, res) {
 })
 
 //URL Shortener
-
-
 //Build schema and model to save URLS
 const ShortURL = mongoose.model('ShortURL', new mongoose.Schema({ 
   short_url: String,
@@ -98,27 +96,22 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
-// create application/json parser
-
 app.post("/api/shorturl/", function (req, res) {
-
   let suffix = nanoid(8)
   let requestedURL = req.body.url
   let newShortURL = suffix
 
   let newURL = new ShortURL ({
-    short_url: __dirname + "/api/shorturl/" + suffix,
+    short_url: newShortURL,
     original_url: requestedURL,
     suffix: suffix
   })
 
   newURL.save(function(err, doc) {
     if (err) return console.error(err);
-    res.json({
-    
+    res.json({    
     "short_url": newURL.short_url,
-    "original_url": newURL.original_url,
-    
+    "original_url": newURL.original_url    
     });
   });
 })
@@ -130,7 +123,6 @@ app.get("/api/shorturl/:suffix", function(req, res) {
     res.redirect(urlRedirect.original_url)
   })
 });
-
 
 // listen for requests :)
 var listener = app.listen(port, function () {
