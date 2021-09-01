@@ -9,6 +9,7 @@ var port = process.env.PORT || 3000
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
 var cors = require('cors');
+const { request } = require('express');
 app.use(cors({optionsSuccessStatus: 200}));  // some legacy browsers choke on 204
 
 // http://expressjs.com/en/starter/static-files.html
@@ -34,15 +35,14 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-app.get("/api/", function(req, res) {
+app.get("/api/timestamp", function(req, res) {
   let now = new Date()
   res.json({
     "unix": now.getTime(),
     "utc": now.toUTCString()
   })
 })
-
-app.get("/api/:date_string", function (req, res) {
+app.get("/api/timestamp/:date_string", function (req, res) {
   let dateString = req.params.date_string;
   if(dateString.match(/\d{5,}/)){
     dateString = +dateString;
@@ -55,9 +55,18 @@ app.get("/api/:date_string", function (req, res) {
       "unix": passedValue.getTime(),
       "utc": passedValue.toUTCString()
     })
-  }
-  
+  }  
 })
+
+app.get("/api/whoami", function (req, res) {
+  res.json({
+    "ipaddress": req.headers['x-forward-for'] || req.socket.remoteAddress || null,
+    "language": req.headers["accept-language"],
+    "software": req.headers["user-agent"]
+    
+  })
+})
+
 
 
 
