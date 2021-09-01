@@ -100,7 +100,7 @@ app.use(bodyParser.json())
 
 // create application/json parser
 
-app.post("/api/shorturl/new/", function (req, res) {
+app.post("/api/shorturl/", function (req, res) {
 
   let suffix = nanoid(8)
   let requestedURL = req.body.url
@@ -115,10 +115,10 @@ app.post("/api/shorturl/new/", function (req, res) {
   newURL.save(function(err, doc) {
     if (err) return console.error(err);
     res.json({
-    "saved": true,
+    
     "short_url": newURL.short_url,
     "original_url": newURL.original_url,
-    "suffix": newURL.suffix
+    
     });
   });
 })
