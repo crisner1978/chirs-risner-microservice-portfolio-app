@@ -1,19 +1,13 @@
-// server.js
-// where your node app starts
-
-// init project
-var express = require('express');
-var mongo = require('mongodb');
-var mongoose = require('mongoose');
-var bodyParser = require('body-parser');
-//may use Nano Id instead
+require('dotenv').config();
+const express = require('express');
+// var mongo = require('mongodb');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 const { nanoid } = require('nanoid')
-// var shortid = require('shortid')
 const dns = require('dns');
 const urlParser = require('url');
-var app = express();
-var port = process.env.PORT || 3000
-require('dotenv').config();
+const app = express();
+const port = process.env.PORT || 3000
 
 mongoose.connect(process.env.DB_URI, {
   useNewUrlParser: true, useUnifiedTopology: true
