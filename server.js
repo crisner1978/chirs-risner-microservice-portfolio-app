@@ -9,6 +9,8 @@ var bodyParser = require('body-parser');
 //may use Nano Id instead
 const { nanoid } = require('nanoid')
 // var shortid = require('shortid')
+const dns = require('dns');
+const urlParser = require('url');
 var app = express();
 var port = process.env.PORT || 3000
 require('dotenv').config();
@@ -100,8 +102,10 @@ app.post("/api/shorturl/", function (req, res) {
   let suffix = nanoid(8)
   let requestedURL = req.body.url
   let newShortURL = suffix
-
-  let newURL = new ShortURL ({
+  dns.lookup(urlParser.parse(requestedURL).hostname, (error, address) => {
+    if(!address) {
+      res.json({ error: "Invalid URL" })
+    } else {let newURL = new ShortURL ({
     short_url: newShortURL,
     original_url: requestedURL,
     suffix: suffix
@@ -113,7 +117,9 @@ app.post("/api/shorturl/", function (req, res) {
     "short_url": newURL.short_url,
     "original_url": newURL.original_url    
     });
-  });
+  });}
+  })
+  
 })
 
 app.get("/api/shorturl/:suffix", function(req, res) {
