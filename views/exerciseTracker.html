@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Exercise Tracker | chrisRisner</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">  </head>
+
+  <body>
+    <div class="container">
+      <h1>Exercise tracker</h1>
+      <form action="/api/exercise/new-user" method="post">
+        <h3>Create a New User</h3>
+        <p><code>POST /api/exercise/new-user</code></p>
+        <input id="uname" type="text" name="username" placeholder="username" />
+        <input type="submit" value="Submit" />
+      </form>
+      <form id="exercise-form" method="post">
+        <h3>Add exercises</h3>
+        <p><code>POST /api/users/:_id/exercises</code></p>
+        <input id="uid" type="text" name=":_id" placeholder=":_id" />
+        <input id="desc" type="text" name="description" placeholder="description*" />
+        <input id="dur" type="text" name="duration" placeholder="duration* (mins.)" />
+        <input id="date" type="text" name="date" placeholder="date (yyyy-mm-dd)" />
+        <input type="submit" value="Submit" />
+      </form>
+      <p>
+        <strong>GET user's exercise log: </strong>
+        <code>GET /api/users/:_id/logs?[from][&amp;to][&amp;limit]</code>
+      </p>
+      <p><strong>[ ]</strong> = optional</p>
+      <p><strong>from, to</strong> = dates (yyyy-mm-dd); <strong>limit</strong> = number</p>
+    </div>
+    <script>
+      const exerciseForm = document.getElementById("exercise-form");
+
+      exerciseForm.addEventListener("submit", () => {
+        const userId = document.getElementById("uid").value;
+        exerciseForm.action = `/api/users/${userId}/exercises`;
+
+        exerciseForm.submit();
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+  </body>
+</html>

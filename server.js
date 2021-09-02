@@ -39,6 +39,10 @@ app.get("/urlShortener", function (req, res) {
   res.sendFile(__dirname + '/views/urlShortener.html');
 });
 
+app.get("/exerciseTracker", function (req, res) {
+  res.sendFile(__dirname + '/views/exerciseTracker.html');
+});
+
 
 // your first API endpoint... 
 app.get("/api/hello", function (req, res) {
@@ -123,6 +127,33 @@ app.get("/api/shorturl/:suffix", function(req, res) {
     res.redirect(urlRedirect.original_url)
   })
 });
+
+//Exercise Tracker
+//Build schema and model for exercise user
+const ExerciseUser = mongoose.model('ExerciseUser', new mongoose.Schema({ 
+  _id: String,
+  username: String
+}));
+
+
+app.post("/api/exercise/new-user/", function (req, res) {
+  console.log("accessing post request")
+  let id = mongoose.Types.ObjectId();
+  let exerciseUser = new ExerciseUser ({
+    username: req.body.username,
+    _id: id
+  })
+
+  exerciseUser.save(function(err, doc) {
+    if (err) return console.error(err);
+    res.json({    
+    "saved": true,
+    "username": exerciseUser.username,
+    "_id": exerciseUser["_id"]    
+    });
+  })
+})
+
 
 // listen for requests :)
 var listener = app.listen(port, function () {
