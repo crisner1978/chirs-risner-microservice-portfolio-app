@@ -154,6 +154,13 @@ app.post("/api/users/", function (req, res) {
   })
 })
 
+app.get("/api/users", (req, res) => {
+  ExerciseUser.find({}, (err, exerciseUsers) => {
+    res.json({
+    users: exerciseUsers
+    })
+  })  
+})
 
 // listen for requests :)
 var listener = app.listen(port, function () {
