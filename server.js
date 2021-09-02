@@ -136,7 +136,7 @@ const ExerciseUser = mongoose.model('ExerciseUser', new mongoose.Schema({
 }));
 
 
-app.post("/api/exercise/new-user/", function (req, res) {
+app.post("/api/users/", function (req, res) {
   console.log("accessing post request")
   let id = mongoose.Types.ObjectId();
   let exerciseUser = new ExerciseUser ({
