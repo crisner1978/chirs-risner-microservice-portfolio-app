@@ -156,9 +156,7 @@ app.post("/api/users/", function (req, res) {
 
 app.get("/api/users", (req, res) => {
   ExerciseUser.find({}, (err, exerciseUsers) => {
-    res.json({
-    users: exerciseUsers
-    })
+    res.json(exerciseUsers)
   })  
 })
 
