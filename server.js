@@ -144,7 +144,9 @@ let exerciseSessionSchema = new mongoose.Schema({
 });
 let exerciseUserSchema = new mongoose.Schema({
   username: String,
+  count: Number,
   log: [exerciseSessionSchema],
+  
 });
 
 let ExerciseSession = mongoose.model("ExerciseSession", exerciseSessionSchema);
