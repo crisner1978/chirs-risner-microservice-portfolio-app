@@ -1,166 +1,198 @@
-require('dotenv').config();
-const express = require('express');
+require("dotenv").config();
+const express = require("express");
 // var mongo = require('mongodb');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const { nanoid } = require('nanoid')
-const dns = require('dns');
-const urlParser = require('url');
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const { nanoid } = require("nanoid");
+const dns = require("dns");
+const urlParser = require("url");
 const app = express();
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3000;
 
 mongoose.connect(process.env.DB_URI, {
-  useNewUrlParser: true, useUnifiedTopology: true
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
-// so that your API is remotely testable by FCC 
-var cors = require('cors');
-const { request } = require('express');
-app.use(cors({optionsSuccessStatus: 200}));  // some legacy browsers choke on 204
+// so that your API is remotely testable by FCC
+var cors = require("cors");
+const { request, response } = require("express");
+const { resourceUsage } = require("process");
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// parse application/json
+app.use(bodyParser.json());
+
+app.use(cors({ optionsSuccessStatus: 200 })); // some legacy browsers choke on 204
 
 // http://expressjs.com/en/starter/static-files.html
-app.use(express.static('public'));
+app.use(express.static("public"));
 
 // http://expressjs.com/en/starter/basic-routing.html
 app.get("/", function (req, res) {
-  res.sendFile(__dirname + '/views/index.html');
+  res.sendFile(__dirname + "/views/index.html");
 });
 
 app.get("/timestamp", function (req, res) {
-  res.sendFile(__dirname + '/views/timestamp.html');
+  res.sendFile(__dirname + "/views/timestamp.html");
 });
 
 app.get("/requestHeaderParser", function (req, res) {
-  res.sendFile(__dirname + '/views/requestHeaderParser.html');
+  res.sendFile(__dirname + "/views/requestHeaderParser.html");
 });
 
 app.get("/urlShortener", function (req, res) {
-  res.sendFile(__dirname + '/views/urlShortener.html');
+  res.sendFile(__dirname + "/views/urlShortener.html");
 });
 
 app.get("/exerciseTracker", function (req, res) {
-  res.sendFile(__dirname + '/views/exerciseTracker.html');
+  res.sendFile(__dirname + "/views/exerciseTracker.html");
 });
 
-
-// your first API endpoint... 
+// your first API endpoint...
 app.get("/api/hello", function (req, res) {
-  console.log(({greeting: 'hello API'}))
-  res.json({greeting: 'hello API'});
+  console.log({ greeting: "hello API" });
+  res.json({ greeting: "hello API" });
 });
 
 //Timestamp get request
-app.get("/api/timestamp", function(req, res) {
-  let now = new Date()
+app.get("/api/timestamp", function (req, res) {
+  let now = new Date();
   res.json({
-    "unix": now.getTime(),
-    "utc": now.toUTCString()
-  })
-})
+    unix: now.getTime(),
+    utc: now.toUTCString(),
+  });
+});
 app.get("/api/timestamp/:date_string", function (req, res) {
   let dateString = req.params.date_string;
-  if(dateString.match(/\d{5,}/)){
+  if (dateString.match(/\d{5,}/)) {
     dateString = +dateString;
   }
   let passedValue = new Date(dateString);
-  if(passedValue == "Invalid Date") {
-    res.json({ "error" : "Invalid Date" })
+  if (passedValue == "Invalid Date") {
+    res.json({ error: "Invalid Date" });
   } else {
     res.json({
-      "unix": passedValue.getTime(),
-      "utc": passedValue.toUTCString()
-    })
-  }  
-})
+      unix: passedValue.getTime(),
+      utc: passedValue.toUTCString(),
+    });
+  }
+});
 
 //Request Header Parser get request
 app.get("/api/whoami", function (req, res) {
   res.json({
-    "ipaddress": req.headers['x-forward-for'] || req.socket.remoteAddress || null,
-    "language": req.headers["accept-language"],
-    "software": req.headers["user-agent"]    
-  })
-})
+    ipaddress: req.headers["x-forward-for"] || req.socket.remoteAddress || null,
+    language: req.headers["accept-language"],
+    software: req.headers["user-agent"],
+  });
+});
 
 //URL Shortener
 //Build schema and model to save URLS
-const ShortURL = mongoose.model('ShortURL', new mongoose.Schema({ 
-  short_url: String,
-  original_url: String,
-  suffix: String
-}));
-// parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
-
-// parse application/json
-app.use(bodyParser.json())
+const ShortURL = mongoose.model(
+  "ShortURL",
+  new mongoose.Schema({
+    short_url: String,
+    original_url: String,
+    suffix: String,
+  })
+);
 
 app.post("/api/shorturl/", function (req, res) {
-  let suffix = nanoid(8)
-  let requestedURL = req.body.url
-  let newShortURL = suffix
+  let suffix = nanoid(8);
+  let requestedURL = req.body.url;
+  let newShortURL = suffix;
   dns.lookup(urlParser.parse(requestedURL).hostname, (error, address) => {
-    if(!address) {
-      res.json({ error: "Invalid URL" })
-    } else {let newURL = new ShortURL ({
-    short_url: newShortURL,
-    original_url: requestedURL,
-    suffix: suffix
-  })
+    if (!address) {
+      res.json({ error: "Invalid URL" });
+    } else {
+      let newURL = new ShortURL({
+        short_url: newShortURL,
+        original_url: requestedURL,
+        suffix: suffix,
+      });
 
-  newURL.save(function(err, doc) {
-    if (err) return console.error(err);
-    res.json({    
-    "short_url": newURL.short_url,
-    "original_url": newURL.original_url    
-    });
-  });}
-  })
-  
-})
+      newURL.save(function (err, doc) {
+        if (err) return console.error(err);
+        res.json({
+          short_url: newURL.short_url,
+          original_url: newURL.original_url,
+        });
+      });
+    }
+  });
+});
 
-app.get("/api/shorturl/:suffix", function(req, res) {
+app.get("/api/shorturl/:suffix", function (req, res) {
   let generatedSuffix = req.params.suffix;
-  ShortURL.find({suffix: generatedSuffix}).then(function(foundUrls) {
+  ShortURL.find({ suffix: generatedSuffix }).then(function (foundUrls) {
     let urlRedirect = foundUrls[0];
-    res.redirect(urlRedirect.original_url)
-  })
+    res.redirect(urlRedirect.original_url);
+  });
 });
 
 //Exercise Tracker
 //Build schema and model for exercise user
-const ExerciseUser = mongoose.model('ExerciseUser', new mongoose.Schema({ 
-  _id: String,
-  username: String
-}));
+let exerciseSessionSchema = new mongoose.Schema({
+  description: String,
+  duration: Number,
+  date: { type: Date, default: Date.now() },
+});
+let exerciseUserSchema = new mongoose.Schema({
+  username: String,
+  log: [exerciseSessionSchema],
+});
 
+let ExerciseSession = mongoose.model('ExerciseSession', exerciseSessionSchema)
+let ExerciseUser = mongoose.model('ExerciseUser', exerciseUserSchema)
 
 app.post("/api/users/", function (req, res) {
-  console.log("accessing post request")
-  let id = mongoose.Types.ObjectId();
-  let exerciseUser = new ExerciseUser ({
-    username: req.body.username,
-    _id: id
-  })
-
-  exerciseUser.save(function(err, doc) {
-    if (err) return console.error(err);
-    res.json({    
-    "saved": true,
-    "username": exerciseUser.username,
-    "_id": exerciseUser["_id"]    
-    });
-  })
-})
+  let newExerciseUser = new ExerciseUser({ username: req.body.username });
+  newExerciseUser.save((err, savedUser) => {
+    if (!err) {
+      let responseObject = {}
+      responseObject['username'] = savedUser.username
+      responseObject['_id'] = savedUser.id
+      res.json(responseObject)
+    }    
+  });
+});
 
 app.get("/api/users", (req, res) => {
   ExerciseUser.find({}, (err, exerciseUsers) => {
-    res.json(exerciseUsers)
-  })  
+    res.json(exerciseUsers);
+  });
+});
+
+app.post("/api/users/:_id/exercises", (req, res) => {
+  let newExerciseSession = new ExerciseSession({
+    description: req.body.description,
+    duration: parseInt(req.body.duration),
+    date: req.body.date 
+  })
+  if(newExerciseSession.date === "") {
+    newExerciseSession.date === new Date().toISOString().substring(0, 10)
+  }
+  ExerciseUser.findByIdAndUpdate({ _id: req.params._id},
+  {$push: {log: newExerciseSession}},
+  {new: true},
+  (err, updatedUser) => {
+    let responseObject = {}
+    responseObject['_id'] = updatedUser._id
+    responseObject['username'] = updatedUser.username
+    responseObject['date'] = new Date(newExerciseSession.date).toDateString()
+    responseObject['description'] = newExerciseSession.description
+    responseObject['duration'] = newExerciseSession.duration
+    res.json(responseObject)
+  }
+  )
 })
 
 // listen for requests :)
 var listener = app.listen(port, function () {
-  console.log('Your app is listening on port ' + listener.address().port);
+  console.log("Your app is listening on port " + listener.address().port);
 });
