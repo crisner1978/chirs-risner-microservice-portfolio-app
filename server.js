@@ -140,7 +140,7 @@ app.get("/api/shorturl/:suffix", function (req, res) {
 let exerciseSessionSchema = new mongoose.Schema({
   description: String,
   duration: Number,
-  date: { type: String},
+  date: { type: Date, default: Date.now() },
 });
 let exerciseUserSchema = new mongoose.Schema({
   username: String,
@@ -177,7 +177,7 @@ app.post("/api/users/:_id/exercises", (req, res) => {
     date: req.body.date,
   });
   if (newExerciseSession.date === "") {
-    newExerciseSession.date === new Date().toDateString();
+    newExerciseSession.date === new Date().toISOString().substring(0, 10);
   }
   ExerciseUser.findByIdAndUpdate(
     { _id: req.params._id },
