@@ -147,18 +147,18 @@ let exerciseUserSchema = new mongoose.Schema({
   log: [exerciseSessionSchema],
 });
 
-let ExerciseSession = mongoose.model('ExerciseSession', exerciseSessionSchema)
-let ExerciseUser = mongoose.model('ExerciseUser', exerciseUserSchema)
+let ExerciseSession = mongoose.model("ExerciseSession", exerciseSessionSchema);
+let ExerciseUser = mongoose.model("ExerciseUser", exerciseUserSchema);
 
 app.post("/api/users/", function (req, res) {
   let newExerciseUser = new ExerciseUser({ username: req.body.username });
   newExerciseUser.save((err, savedUser) => {
     if (!err) {
-      let responseObject = {}
-      responseObject['username'] = savedUser.username
-      responseObject['_id'] = savedUser.id
-      res.json(responseObject)
-    }    
+      let responseObject = {};
+      responseObject["username"] = savedUser.username;
+      responseObject["_id"] = savedUser.id;
+      res.json(responseObject);
+    }
   });
 });
 
@@ -172,24 +172,35 @@ app.post("/api/users/:_id/exercises", (req, res) => {
   let newExerciseSession = new ExerciseSession({
     description: req.body.description,
     duration: parseInt(req.body.duration),
-    date: req.body.date 
+    date: req.body.date,
+  });
+  if (newExerciseSession.date === "") {
+    newExerciseSession.date === new Date().toISOString().substring(0, 10);
+  }
+  ExerciseUser.findByIdAndUpdate(
+    { _id: req.params._id },
+    { $push: { log: newExerciseSession } },
+    { new: true },
+    (err, updatedUser) => {
+      let responseObject = {};
+      responseObject["_id"] = updatedUser._id;
+      responseObject["username"] = updatedUser.username;
+      responseObject["date"] = new Date(newExerciseSession.date).toDateString();
+      responseObject["description"] = newExerciseSession.description;
+      responseObject["duration"] = newExerciseSession.duration;
+      res.json(responseObject);
+    }
+  );
+});
+
+app.get("/api/users/:_id/logs", (req, res) => {
+  ExerciseUser.findById(req.params._id, (error, result) => {
+    if(!error){
+      let responseObject = result
+      responseObject['count'] = result.log.length
+      res.json(responseObject)
+    }
   })
-  if(newExerciseSession.date === "") {
-    newExerciseSession.date === new Date().toISOString().substring(0, 10)
-  }
-  ExerciseUser.findByIdAndUpdate({ _id: req.params._id},
-  {$push: {log: newExerciseSession}},
-  {new: true},
-  (err, updatedUser) => {
-    let responseObject = {}
-    responseObject['_id'] = updatedUser._id
-    responseObject['username'] = updatedUser.username
-    responseObject['date'] = new Date(newExerciseSession.date).toDateString()
-    responseObject['description'] = newExerciseSession.description
-    responseObject['duration'] = newExerciseSession.duration
-    res.json(responseObject)
-  }
-  )
 })
 
 // listen for requests :)
