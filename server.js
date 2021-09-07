@@ -137,19 +137,18 @@ app.get("/api/shorturl/:suffix", function (req, res) {
 
 //Exercise Tracker
 //Build schema and model for exercise user
-let exerciseSessionSchema = new mongoose.Schema({
-  description: String,
-  duration: Number,
-  date: { type: Date, default: Date.now() },
-});
 let exerciseUserSchema = new mongoose.Schema({
-  username: String,
-  count: Number,
-  log: [exerciseSessionSchema],
-  
+  username: {
+    type: String,
+  },
+  exercises: [{
+    _id: false,
+    description: String,
+    duration: Number,
+    date: { type: String, }
+  }]
 });
 
-let ExerciseSession = mongoose.model("ExerciseSession", exerciseSessionSchema);
 let ExerciseUser = mongoose.model("ExerciseUser", exerciseUserSchema);
 
 app.post("/api/users/", function (req, res) {
@@ -170,40 +169,65 @@ app.get("/api/users", (req, res) => {
   });
 });
 
-app.post("/api/users/:_id/exercises", (req, res) => {
-  let newExerciseSession = new ExerciseSession({
-    description: req.body.description,
-    duration: parseInt(req.body.duration),
-    date: req.body.date,
-  });
-  if (newExerciseSession.date === "") {
-    newExerciseSession.date === new Date().toISOString().substring(0, 10);
+app.post("/api/users/:_id/exercises", async (req, res, next) => {
+  let date = req.body.date;
+  var newDate;
+  if(date){
+    newDate = new Date(date);
+    newDate.toString();
+  } else { newDate = new Date() }
+  newDate = newDate.toDateString();
+  // let newExerciseSession = new ExerciseSession({
+  //   description: req.body.description,
+  //   duration: parseInt(req.body.duration),
+  //   date: newDate,
+  // });
+  // if (newExerciseSession.date === "") {
+  //   newExerciseSession.date === new Date().toISOString().substring(0, 10);
+  // }
+  try {
+    const detail = await ExerciseUser.findByIdAndUpdate({ _id: req.params._id }, {
+     $push: { 
+        exercises: {
+          description: req.body.description,
+          duration: parseInt(req.body.duration),
+          date: newDate
+    } } } )
+    // { new: true },
+    // (err, updatedUser) => {
+    //   let responseObject = {};
+    //   responseObject["_id"] = updatedUser._id;
+    //   responseObject["username"] = updatedUser.username;
+    //   responseObject["date"] = newDate;
+    //   responseObject["description"] = newExerciseSession.description;
+    //   responseObject["duration"] = newExerciseSession.duration;
+      res.json({
+        _id: req.params._id,
+        username: detail.username,
+        date: newDate,
+        duration: parseInt(req.body.duration),
+        description: req.body.description
+      });
+    }
+  catch (err) {
+    res.send("Error, err.message");
   }
-  ExerciseUser.findByIdAndUpdate(
-    { _id: req.params._id },
-    { $push: { log: newExerciseSession } },
-    { new: true },
-    (err, updatedUser) => {
-      let responseObject = {};
-      responseObject["_id"] = updatedUser._id;
-      responseObject["username"] = updatedUser.username;
-      responseObject["date"] = new Date(newExerciseSession.date).toDateString();
-      responseObject["description"] = newExerciseSession.description;
-      responseObject["duration"] = newExerciseSession.duration;
-      res.json(responseObject);
-    }
+  }
   );
-});
 
-app.get("/api/users/:_id/logs", (req, res) => {
-  ExerciseUser.findById(req.params._id, (error, result) => {
-    if(!error){
-      let responseObject = result
-      responseObject['count'] = result.log.length
-      res.json(responseObject)
-    }
+
+app.get("/api/users/:_id/logs", async (req, res) => {
+  const logs = await ExerciseUser.findById({ _id: req.params._id })
+  var arr = {
+    _id: logs._id,
+    username: logs.username,
+    count: logs.exercises.length,
+    log: logs.exercises
+  }
+  
+  res.json(arr);
   })
-})
+
 
 // listen for requests :)
 var listener = app.listen(port, function () {
