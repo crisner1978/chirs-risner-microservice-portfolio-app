@@ -221,49 +221,17 @@ app.post("/api/users/:_id/exercises", async (req, res, next) => {
   }
 });
 
-app.get('/api/users/:_id/logs', (req, res) => {
-  
-  ExerciseUser.findById(({ _id: req.params._id }, (error, result) => {
-    if(!error){
-      let responseObject = result
-      
-      if(request.query.from || request.query.to){
-        
-        let fromDate = new Date(0)
-        let toDate = new Date()
-        
-        if(request.query.from){
-          fromDate = new Date(request.query.from)
-        }
-        
-        if(request.query.to){
-          toDate = new Date(request.query.to)
-        }
-        
-        fromDate = fromDate.getTime()
-        toDate = toDate.getTime()
-        
-        responseObject.log = responseObject.log.filter((session) => {
-          let sessionDate = new Date(session.date).getTime()
-          
-          return sessionDate >= fromDate && sessionDate <= toDate
-          
-        })
-        
-      }
-      
-      if(request.query.limit){
-        responseObject.log = responseObject.log.slice(0, request.query.limit)
-      }
-      
-      responseObject = responseObject.toJSON()
-      responseObject['count'] = result.log.length
-      response.json(responseObject)
-    }
-  })
-  
-)
-})
+app.get("/api/users/:_id/logs", (req, res) => {
+  ExerciseUser.findById({ _id: req.params._id }, (error, result));
+  if (!error) {
+    let responseObject = result;
+
+
+
+    responseObject['count'] = result
+    res.json(responseObject);
+  }
+});
 
 // listen for requests :)
 var listener = app.listen(port, function () {
