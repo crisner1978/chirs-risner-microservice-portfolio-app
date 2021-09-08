@@ -214,22 +214,17 @@ app.post("/api/users/:_id/exercises", async (req, res, next) => {
   }
   );
 
-app.get("/api/users/:_id/logs", (req, res) => {
-ExerciseUser.findById({ _id: req.params._id }, (error, result) => {
-  if(!error){
-    let responseObject = result
-    responseObject['log'] = result.exercises
-    responseObject['count'] = result.exercises.length  
-    res.json(responseObject)
-  }
-})
-  // var arr = {
-  //   _id: logs._id,
-  //   username: logs.username,
-  //   count: logs.exercises.length,
-  //   log: logs.exercises
-  // }
 
+app.get("/api/users/:_id/logs", async (req, res) => {
+  const logs = await ExerciseUser.findById({ _id: req.params._id })
+  var arr = {
+    _id: logs._id,
+    username: logs.username,
+    count: logs.exercises.length,
+    log: logs.exercises,
+    date: logs.date
+  }
+  res.json(arr);
   })
 
 
