@@ -14,8 +14,7 @@ mongoose.connect(process.env.DB_URI, {
   useUnifiedTopology: true,
 });
 
-// enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
-// so that your API is remotely testable by FCC
+// enable CORS
 var cors = require("cors");
 const { request, response } = require("express");
 const { resourceUsage } = require("process");
@@ -215,17 +214,22 @@ app.post("/api/users/:_id/exercises", async (req, res, next) => {
   }
   );
 
-
-app.get("/api/users/:_id/logs", async (req, res) => {
-  const logs = await ExerciseUser.findById({ _id: req.params._id })
-  var arr = {
-    _id: logs._id,
-    username: logs.username,
-    count: logs.exercises.length,
-    log: logs.exercises
+app.get("/api/users/:_id/logs", (req, res) => {
+ExerciseUser.findById({ _id: req.params._id }, (error, result) => {
+  if(!error){
+    let responseObject = result
+    responseObject['log'] = result.exercises
+    responseObject['count'] = result.exercises.length  
+    res.json(responseObject)
   }
-  
-  res.json(arr);
+})
+  // var arr = {
+  //   _id: logs._id,
+  //   username: logs.username,
+  //   count: logs.exercises.length,
+  //   log: logs.exercises
+  // }
+
   })
 
 
