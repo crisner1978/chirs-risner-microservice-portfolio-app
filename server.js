@@ -140,7 +140,6 @@ let exerciseUserSchema = new mongoose.Schema({
   username: {
     type: String,
   },
-  count: Number,
   exercises: [
     {
       _id: false,
@@ -202,14 +201,7 @@ app.post("/api/users/:_id/exercises", async (req, res, next) => {
         },
       }
     );
-    // { new: true },
-    // (err, updatedUser) => {
-    //   let responseObject = {};
-    //   responseObject["_id"] = updatedUser._id;
-    //   responseObject["username"] = updatedUser.username;
-    //   responseObject["date"] = newDate;
-    //   responseObject["description"] = newExerciseSession.description;
-    //   responseObject["duration"] = newExerciseSession.duration;
+
     res.json({
       _id: req.params._id,
       username: detail.username,
@@ -222,44 +214,36 @@ app.post("/api/users/:_id/exercises", async (req, res, next) => {
   }
 });
 
-app.get("/api/users/:_id/logs", (req, res) => {
-  ExerciseUser.findById( { _id: req.params._id }, (error, result) => {
-      if (!error) {
-        let responseObject = result
-
-        if (req.query.limit) {
-          responseObject.exercises = responseObject.exercises.slice(0, req.query.limit);
-        }
-
-        if(req.query.from || req.query.to){
-          let fromDate = new Date(0)
-          let toDate = new Date()
-          if(req.query.from){
-            fromDate = new Date(req.query.from)
-          }
-          if(req.query.to){
-            toDate = new Date(req.query.to)
-          }
-
-          fromDate = fromDate.getTime()
-          toDate = toDate.getTime()
-
-          responseObject.exercises = responseObject.exercises.filter((session) => {
-            let sessionDate = new Date(session.date).getTime()
-            return sessionDate >= fromDate && sessionDate <= toDate
-          })
-
-        }
-
-
-        
-        res.json(responseObject)
-      }
+app.get("/api/users/:_id/logs", async (req, res) => {
+  const logs = await ExerciseUser.findById({ _id: req.params._id });
+  const from = req.query.from;
+  const to = req.query.to;
+  const limit = req.query.limit;
+  let filtered = null;
+  if (from){
+    const fromTime = new Date(from).getTime();
+    if(to){
+      const toTime = new Date(to).getTime();
+      filtered = user.log.filter(ex => new Date(ex.date).getTime() >=
+      fromTime && new Date(ex.date).getTime() <= toTime);
+    }else{
+      filtered = user.log.filter(ex => new Date(ex.date).getTime() >= fromTime)
     }
-  );
+  }
+  if(limit){
+    filtered = user.log.slice(0, limit)
+  }
+  var arr = {
+    _id: logs._id,
+    username: logs.username,
+    count: logs.exercises.length,
+    log: filtered || logs.exercises,
+  };
+  res.json(arr);
 });
 
 // listen for requests :)
 var listener = app.listen(port, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
+r
