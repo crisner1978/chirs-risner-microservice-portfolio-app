@@ -173,21 +173,7 @@ app.get("/api/users", (req, res) => {
 app.post("/api/users/:_id/exercises", async (req, res, next) => {
   let date = req.body.date;
   var newDate;
-  if (date) {
-    newDate = new Date(date);
-    newDate.toString();
-  } else {
-    newDate = new Date();
-  }
-  newDate = newDate.toDateString();
-  // let newExerciseSession = new ExerciseSession({
-  //   description: req.body.description,
-  //   duration: parseInt(req.body.duration),
-  //   date: newDate,
-  // });
-  // if (newExerciseSession.date === "") {
-  //   newExerciseSession.date === new Date().toISOString().substring(0, 10);
-  // }
+
   try {
     const detail = await ExerciseUser.findByIdAndUpdate(
       { _id: req.params._id },
@@ -214,36 +200,33 @@ app.post("/api/users/:_id/exercises", async (req, res, next) => {
   }
 });
 
-app.get("/api/users/:_id/logs", async (req, res) => {
-  const logs = await ExerciseUser.findById({ _id: req.params._id });
-  const from = req.query.from;
-  const to = req.query.to;
-  const limit = req.query.limit;
-  let filtered = null;
-  if (from){
-    const fromTime = new Date(from).getTime();
-    if(to){
-      const toTime = new Date(to).getTime();
-      filtered = user.log.filter(ex => new Date(ex.date).getTime() >=
-      fromTime && new Date(ex.date).getTime() <= toTime);
-    }else{
-      filtered = user.log.filter(ex => new Date(ex.date).getTime() >= fromTime)
+app.get("/api/users/:_id/logs", (req, res) => {
+  ExerciseUser.findById({ _id: req.params._id }).then((exerciseUser) => {
+    const from = req.query.from;
+    const to = req.query.to;
+    const limit = req.query.limit;
+    let filtered = null;
+    if (from) {
+      const fromTime = new Date(from).getTime();
+      if (to) {
+        filtered = exerciseUser.exercises.filter(
+          date => new Date(req.body.date).getTime() >= fromTime
+        );
+      }
     }
-  }
-  if(limit){
-    filtered = user.log.slice(0, limit)
-  }
-  var arr = {
-    _id: logs._id,
-    username: logs.username,
-    count: logs.exercises.length,
-    log: filtered || logs.exercises,
-  };
-  res.json(arr);
+    if (limit) {
+      filtered = exerciseUser.exercises.slice(0, limit);
+    }
+    res.json({
+      _id: exerciseUser._id,
+      username: exerciseUser.username,
+      count: exerciseUser.exercises.length,
+      log: filtered || exerciseUser.exercises,
+    });
+  });
 });
 
 // listen for requests :)
 var listener = app.listen(port, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
-r
