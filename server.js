@@ -18,6 +18,7 @@ mongoose.connect(process.env.DB_URI, {
 var cors = require("cors");
 const { request, response } = require("express");
 const { resourceUsage } = require("process");
+const { resourceLimits } = require("worker_threads");
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -173,7 +174,21 @@ app.get("/api/users", (req, res) => {
 app.post("/api/users/:_id/exercises", async (req, res, next) => {
   let date = req.body.date;
   var newDate;
-
+  if (date) {
+    newDate = new Date(date);
+    newDate.toString();
+  } else {
+    newDate = new Date();
+  }
+  newDate = newDate.toDateString();
+  // let newExerciseSession = new ExerciseSession({
+  //   description: req.body.description,
+  //   duration: parseInt(req.body.duration),
+  //   date: newDate,
+  // });
+  // if (newExerciseSession.date === "") {
+  //   newExerciseSession.date === new Date().toISOString().substring(0, 10);
+  // }
   try {
     const detail = await ExerciseUser.findByIdAndUpdate(
       { _id: req.params._id },
@@ -200,29 +215,43 @@ app.post("/api/users/:_id/exercises", async (req, res, next) => {
   }
 });
 
-app.get("/api/users/:_id/logs", (req, res) => {
-  ExerciseUser.findById({ _id: req.params._id }).then((exerciseUser) => {
-    const from = req.query.from;
-    const to = req.query.to;
-    const limit = req.query.limit;
-    let filtered = null;
+app.get("/api/users/:_id/logs", async (req, res) => {
+  const logs = await ExerciseUser.findById({ _id: req.params._id });
+  // add to and mark param
+  const from = req.query.from;
+  const to = req.query.to;
+
+  if (from || to) {
+    let fromDate = new Date(0);
+    let toDate = new Date();
+
     if (from) {
-      const fromTime = new Date(from).getTime();
-      if (to) {
-        filtered = exerciseUser.exercises.filter(
-          date => new Date(req.body.date).getTime() >= fromTime
-        );
-      }
+      fromDate = new Date(from);
     }
-    if (limit) {
-      filtered = exerciseUser.exercises.slice(0, limit);
+
+    if (to) {
+      toDate = new Date(to);
     }
-    res.json({
-      _id: exerciseUser._id,
-      username: exerciseUser.username,
-      count: exerciseUser.exercises.length,
-      log: filtered || exerciseUser.exercises,
+
+    fromDate = fromDate.getTime();
+    toDate = toDate.getTime();
+
+    logs.exercises = logs.exercises.filter((session) => {
+      let sessionDate = new Date(session.date).getTime();
+      return sessionDate >= fromDate && sessionDate <= toDate;
     });
+  }
+
+  //limit paramater
+  if (req.query.limit) {
+    logs.exercises = logs.exercises.slice(0, req.query.limit);
+  }
+
+  res.json({
+    _id: logs._id,
+    username: logs.username,
+    count: logs.exercises.length,
+    log: logs.exercises,
   });
 });
 
