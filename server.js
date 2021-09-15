@@ -262,11 +262,11 @@ app.get("/api/users/:_id/logs", async (req, res) => {
 });
 
 //file Metadata Microservice
-app.post("/api/fileanalyse", upload.single("upfile"), (req, res) => {
+app.post('/api/fileanalyse', upload.single('upfile'), (req, res) => {
   res.json({
-    name: req.file.originalname,
-    type: req.file.mimetype,
-    size: req.file.size,
+    "name": req.file.originalname,
+    "type": req.file.mimetype,
+    "size": req.file.size,
   });
 });
 
