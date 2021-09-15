@@ -6,8 +6,8 @@ const bodyParser = require("body-parser");
 const { nanoid } = require("nanoid");
 const dns = require("dns");
 const urlParser = require("url");
-const multer = require("multer")
-const upload = multer({ dest: 'uploads/'})
+const multer = require("multer");
+var upload = multer({ dest: "uploads/" });
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -57,7 +57,6 @@ app.get("/exerciseTracker", function (req, res) {
 app.get("/fileMetadata", function (req, res) {
   res.sendFile(__dirname + "/views/fileMetadata.html");
 });
-
 
 // your first API endpoint...
 app.get("/api/hello", function (req, res) {
@@ -263,13 +262,13 @@ app.get("/api/users/:_id/logs", async (req, res) => {
 });
 
 //file Metadata Microservice
-app.post("/api/fileanalyse", upload.single("upfile"), (req, res, next) => {
+app.post("/api/fileanalyse", upload.single("upfile"), (req, res) => {
   res.json({
     name: req.file.originalname,
     type: req.file.mimetype,
-    size: req.file.size
-  })
-})
+    size: req.file.size,
+  });
+});
 
 // listen for requests :)
 var listener = app.listen(port, function () {

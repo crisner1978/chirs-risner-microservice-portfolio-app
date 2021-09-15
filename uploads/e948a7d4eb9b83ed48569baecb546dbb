@@ -1,0 +1,7 @@
+Use on input field
+
+const inputRef = useRef(null)
+
+  useEffect(()=> {
+      inputRef.current.focus()
+  })
