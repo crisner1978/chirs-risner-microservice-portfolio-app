@@ -1,6 +1,5 @@
 require("dotenv").config();
 const express = require("express");
-// var mongo = require('mongodb');
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const { nanoid } = require("nanoid");
@@ -263,8 +262,11 @@ app.get("/api/users/:_id/logs", async (req, res) => {
 
 //file Metadata Microservice
 app.post('/api/fileanalyse', upload.single('upfile'), (req, res) => {
-  const { originalname: name, mimetype: type, size } = req.file;
-  res.json({ name, type, size });
+  res.json({ 
+    'name': req.file.originalname,
+    'type': req.file.mimetype,
+    'size': req.file.size, 
+  });
 });
 
 // listen for requests :)
