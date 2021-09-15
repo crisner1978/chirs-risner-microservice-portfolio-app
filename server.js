@@ -55,7 +55,7 @@ app.get("/exerciseTracker", function (req, res) {
 });
 
 app.get("/fileMetadata", function (req, res) {
-  res.sendFile(__dirname + "/views/fileMetadata.html");
+  res.sendFile(process.cwd() + "/views/fileMetadata.html");
 });
 
 // your first API endpoint...
