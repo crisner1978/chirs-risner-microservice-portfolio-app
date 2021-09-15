@@ -263,11 +263,11 @@ app.get("/api/users/:_id/logs", async (req, res) => {
 
 //file Metadata Microservice
 app.post('/api/fileanalyse', upload.single('upfile'), (req, res) => {
-  let responseObject = {}
-  responseObject['name'] = req.file.originalname,
-  responseObject['type'] = req.file.mimetype,
-  responseObject['size'] = req.file.size,
-  res.json(responseObject);
+  res.json({
+    name: req.file.originalname,
+    type: req.file.mimetype,
+    size: req.file.size,
+  });
 });
 
 // listen for requests :)
