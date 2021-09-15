@@ -7,7 +7,7 @@ const { nanoid } = require("nanoid");
 const dns = require("dns");
 const urlParser = require("url");
 var multer = require("multer");
-// var upload = multer({ dest: "uploads/" });
+var upload = multer({ dest: "uploads/" });
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -262,7 +262,7 @@ app.get("/api/users/:_id/logs", async (req, res) => {
 });
 
 //file Metadata Microservice
-app.post('/api/fileanalyse', multer().single('upfile'), (req, res) => {
+app.post('/api/fileanalyse', upload.single('upfile'), (req, res) => {
   let responseObject = {}
   responseObject['name'] = req.file.originalname,
   responseObject['type'] = req.file.mimetype,
