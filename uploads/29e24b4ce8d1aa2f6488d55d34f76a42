@@ -1,0 +1,14 @@
+To set background image 
+
+&::after {
+    content: "";
+    opacity: 1;
+    background: #2980b9 url(${BgImg2}) no-repeat fixed top;
+    background-size: cover;
+    background-blend-mode: color-burn;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: -1;

@@ -8,77 +8,66 @@
       type="image/png"
       href="https://cdn.freecodecamp.org/universal/favicons/favicon-16x16.png"
     />
-    <style>
-        body {
-  font-family: Arial, sans-serif;
-  font-size: 16px;
-  color: #222;
-  background-color: #fff;
-  text-align: center;
-  line-height: 1.4em;
-}
-
-main {
-  padding: 0;
-  margin-top: 40px;
-}
-
-h3 {
-  margin-top: 30px;
-}
-
-
-
-.user-stories li {
-  margin-bottom: 1em;
-}
-
-a {
-  color: #2574a9;
-}
-
-form {
-  margin: 10px auto;
-  padding: 20px;
-  max-width: 600px;
-}
-
-label {
-  margin-right: 10px;
-}
-
-input {
-  padding: 5px;
-}
-
-input[type='text'] {
-  width: 220px;
-  text-align: center;
-}
-    </style>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
   </head>
 
   <body>
-    <h1>URL Shortener Microservice</h1>
-    <main>
-      <section>
-        <form action="api/shorturl/" method="POST">
-          <fieldset>
-            <legend>URL Shortener</legend>
-            <label for="url_input">URL:</label>
-            <input id="url_input" type="text" name="url" placeholder="https://www.freecodecamp.org/" />
-            <input type="submit" value="POST URL" />
-          </fieldset>
-          <div>
-              <h2>Example Usage</h2>
-              <p>Post [project_url]/api/shorturl/new - https://www.apple.com</p>
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link" href="/">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/timestamp">Time</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/requestHeaderParser">Header</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="/urlShortener"
+          >URL</a
+        >
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/exerciseTracker">Exercise</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/fileMetadata">File</a>
+      </li>
+    </ul>
+    <div class="container position-absolute top-50 start-50 translate-middle text-center">
+      <h2>URL Shortener Microservice</h2>
+      <hr />
+      <form action="api/shorturl/" method="POST" style="max-width: 600px; margin: auto">
+        <div class="col-12">
+          <label for="url_input" class="form-label h4">URL Shortener</label>
+          <input
+            type="text"
+            name="url"
+            class="form-control"
+            id="url_input"
+            placeholder="https://www.freecodecamp.org/"
+          />
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary" type="submit" value="POST URL">
+              POST URL
+            </button>
           </div>
-        </form>
-      </section>
-    </main>
-    <footer>
-      <p>By <a href="https://www.freecodecamp.org/">freeCodeCamp</a></p>
-      <ul><a href="/">Go Home</a></ul>
-    </footer>
+        </div>
+        <div class="mt-3">
+          <h4>Example Usage</h4>
+          <p>Post [project_url]/api/shorturl/new - https://www.apple.com</p>
+        </div>
+      </form>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>

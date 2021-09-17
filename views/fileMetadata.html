@@ -1,77 +1,129 @@
 <!DOCTYPE html>
 
 <html>
-   <head>
-      <title>File Metadata</title>
-      <link rel="shortcut icon" href="https://cdn.freecodecamp.org/universal/favicons/favicon-32x32.png" type="image/x-icon"/>
-      <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
-      <link href="/public/style.css" rel="stylesheet" type="text/css">
-      <style>
-        body {
-          font-family: 'Roboto', sans-serif;
-          font-size: 16px;
-          color: #222;
-          background-color: #ECF0F1;
-          text-align: center;
-          }
+  <head>
+    <title>File Metadata</title>
+    <link href="/public/style.css" rel="stylesheet" type="text/css" />
 
-          .container {
-          padding: 0;
-          margin-top: 40px;
-          }
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+        font-size: 16px;
+        color: #222;
+        background-color: #ecf0f1;
+        text-align: center;
+      }
 
-          .footer {
-          margin-top: 60px;
-          }
+      .container {
+        padding: 0;
+        margin-top: 40px;
+      }
 
-          a {
-          color: #2574A9;
-          }
+      .footer {
+        margin-top: 60px;
+      }
 
-          input {
-          display: block;
-          position: relative;
-          margin: 10px auto;
-          }
+      a {
+        color: #2574a9;
+      }
 
-          input#button {
-          width: 230px;
-          }
+      input {
+        display: block;
+        position: relative;
+        margin: 10px auto;
+      }
 
-          .view {
-          position:relative;
-          margin: auto;
-          margin-top: 40px;
-          border: 1px  solid  #aaa;
-          padding: 20px;
-          width: 60%;
-          min-width: 400px;
-          }
-      </style>
-   </head>
+      input#button {
+        width: 230px;
+      }
 
-   <body>
-      <div class="container">
-        <h2>API Project: File Metadata Microservice</h2>
+      .view {
+        position: relative;
+        margin: auto;
+        margin-top: 40px;
+        border: 1px solid #aaa;
+        padding: 20px;
+        width: 60%;
+        min-width: 400px;
+      }
+    </style>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+  </head>
 
-        <h3>Usage:</h3>
-        <p>
-          Please Upload a File ...
-        </p>
-        <div class="view">
-          <h4 id="output"></h4>
-          <form enctype="multipart/form-data" method="POST" action="/api/fileanalyse">
-            <input id="inputfield" type="file" name="upfile">
-            <input id="button" type="submit" value="Upload">
-          </form>
+  <body>
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link" href="/">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/timestamp">Time</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/requestHeaderParser">Header</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/urlShortener">URL</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/exerciseTracker">Exercise</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="/fileMetadata"
+          >File</a
+        >
+      </li>
+    </ul>
+    <div
+      class="
+        container
+        position-absolute
+        top-50
+        start-50
+        translate-middle
+        text-center
+        pb-5
+      "
+    >
+      <h2>File Metadata Microservice</h2>
+      <hr />
+      <form
+        enctype="multipart/form-data"
+        method="POST"
+        action="/api/fileanalyse"
+        style="max-width: 600px; margin: auto"
+      >
+        <div class="mb-3">
+          <label for="formFile" class="form-label h4"
+            >Please Upload a File...</label
+          >
+          <input
+            class="form-control"
+            type="file"
+            id="inputfield"
+            name="upfile"
+          />
         </div>
-      </div>
-      <div class="footer">
-        <p>
-          by 
-          <a href="http://www.freecodecamp.com">freeCodeCamp</a>
-          <ul><a href="/">Go Home</a></ul>
-        </p>
-      </div>
-   </body>
+        <div class="d-grid gap-2">
+          <button
+            class="btn btn-primary"
+            id="button"
+            type="submit"
+            value="Upload"
+          >
+            Upload
+          </button>
+        </div>
+      </form>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>

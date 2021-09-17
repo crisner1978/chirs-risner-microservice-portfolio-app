@@ -2,33 +2,128 @@
 <html>
   <head>
     <title>Exercise Tracker | chrisRisner</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">  </head>
-
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We"
+      crossorigin="anonymous"
+    />
+  </head>
   <body>
-    <div class="container">
-      <h1>Exercise tracker</h1>
-      <form action="/api/users" method="post">
-        <h3>Create a New User</h3>
-        <p><code>POST /api/users</code></p>
-        <input id="uname" type="text" name="username" placeholder="username" />
-        <input type="submit" value="Submit" />
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link" href="/">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/timestamp">Time</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/requestHeaderParser">Header</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/urlShortener">URL</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="/exerciseTracker"
+          >Exercise</a
+        >
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/fileMetadata">File</a>
+      </li>
+    </ul>
+    <div class="container position-relative text-center mt-3">
+      <h2>Exercise tracker</h2>
+      <hr />
+      <form
+        action="/api/users"
+        method="post"
+        style="max-width: 600px; margin: auto"
+        class="row"
+      >
+        <div class="col-6 mt-2">
+          <h4>Create a Username</h4>
+          <p><code>POST /api/users</code></p>
+        </div>
+        <div class="col-6">
+          <div class="d-grid gap-2">
+            <input
+              class="form-control"
+              id="uname"
+              type="text"
+              name="username"
+              placeholder="username"
+            />
+          </div>
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary" type="submit" value="Submit">
+              Submit
+            </button>
+          </div>
+        </div>
       </form>
-      <form id="exercise-form" method="post">
-        <h3>Add exercises</h3>
-        <p><code>POST /api/users/:_id/exercises</code></p>
-        <input id="uid" type="text" name=":_id" placeholder=":_id" />
-        <input id="desc" type="text" name="description" placeholder="description*" />
-        <input id="dur" type="text" name="duration" placeholder="duration* (mins.)" />
-        <input id="date" type="text" name="date" placeholder="date (yyyy-mm-dd)" />
-        <input type="submit" value="Submit" />
+      <form
+        class="row mt-3"
+        id="exercise-form"
+        method="post"
+        style="max-width: 600px; margin: auto"
+      >
+        <div class="col-6">
+          <h4>Add Exercises</h4>
+          <p><code>POST /api/users/:_id/exercises</code></p>
+        </div>
+        <div class="col-6">
+          <input
+            class="form-control"
+            id="uid"
+            type="text"
+            name=":_id"
+            placeholder=":_id"
+          />
+          <input
+            class="form-control"
+            id="desc"
+            type="text"
+            name="description"
+            placeholder="description*"
+          />
+          <input
+            class="form-control"
+            id="dur"
+            type="text"
+            name="duration"
+            placeholder="duration* (mins.)"
+          />
+          <input
+            class="form-control"
+            id="date"
+            type="text"
+            name="date"
+            placeholder="date (yyyy-mm-dd)"
+          />
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary" type="submit" value="Submit">
+              Submit
+            </button>
+          </div>
+        </div>
       </form>
-      <p>
-        <strong>GET user's exercise log: </strong>
-        <code>GET /api/users/:_id/logs?[from][&amp;to][&amp;limit]</code>
-      </p>
-      <p><strong>[ ]</strong> = optional</p>
-      <p><strong>from, to</strong> = dates (yyyy-mm-dd); <strong>limit</strong> = number</p>
-      <ul><a href="/">Go Home</a></ul>
+      <div class="row mt-3" style="max-width: 600px; margin: auto">
+        <div class="col-6">
+          <h4>GET User's Exercise Log:</h4>
+          <p>
+            <code>GET /api/users/:_id/logs?[from][&amp;to][&amp;limit]</code>
+          </p>
+        </div>
+        <div class="col-6">
+          <h4>URL Query Parameters</h4>
+          <p>
+            <strong>from, to</strong> = date (yyyy-mm-dd)
+            <br>
+            <strong>limit</strong> = number
+          </p>
+        </div>
+      </div>
     </div>
     <script>
       const exerciseForm = document.getElementById("exercise-form");
@@ -40,6 +135,10 @@
         exerciseForm.submit();
       });
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>
